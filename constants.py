@@ -12,10 +12,10 @@ light_slat = (119,136,153)
 dark_slat = (47, 79, 79)
 dark_red = (255, 0, 0)
 pygame.init()
-font = pygame.font.SysFont("Arial", 20)
-textfont = pygame.font.SysFont('Comic Sans MS', 35)
-game_end = pygame.font.SysFont('dejavusans', 100)
-blackjack = pygame.font.SysFont('roboto', 70)
+font = pygame.font.SysFont("Pretendard Black", 20)
+textfont = pygame.font.SysFont('Pretendard Black', 35)
+game_end = pygame.font.SysFont('Pretendard Black', 100)
+blackjack = pygame.font.SysFont('Pretendard Black', 70)
 
 
 SUITS = ['C', 'S', 'H', 'D']

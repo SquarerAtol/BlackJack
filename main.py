@@ -1,13 +1,11 @@
-import pygame as pygame
+import pygame as pygame, asyncio
 from blackjack_deck import *
 from constants import *
 import sys
 import time
 pygame.init()
-
 clock = pygame.time.Clock()
-
-gameDisplay = pygame.display.set_mode((display_width, display_height))
+gameDisplay = pygame.display.set_mode((1024,600))
 
 pygame.display.set_caption('BlackJack')
 gameDisplay.fill(background_color)
@@ -76,17 +74,17 @@ class Play:
         
         if self.player.value == 21 and self.dealer.value == 21:
             gameDisplay.blit(show_dealer_card, (550, 200))
-            black_jack("Both with BlackJack!", 500, 250, grey)
+            black_jack("BlackJack Tie", 500, 250, grey)
             time.sleep(4)
             self.play_or_exit()
         elif self.player.value == 21:
             gameDisplay.blit(show_dealer_card, (550, 200))
-            black_jack("You got BlackJack!", 500, 250, green)
+            black_jack("BlackJack", 500, 250, green)
             time.sleep(4)
             self.play_or_exit()
         elif self.dealer.value == 21:
             gameDisplay.blit(show_dealer_card, (550, 200))
-            black_jack("Dealer has BlackJack!", 500, 250, red)
+            black_jack("Dealer BlackJack", 500, 250, red)
             time.sleep(4)
             self.play_or_exit()
             
@@ -107,12 +105,12 @@ class Play:
         player_card_2 = pygame.image.load('img/' + self.player.card_img[1] + '.png').convert()
 
         
-        game_texts("Dealer's hand is:", 500, 150)
+        game_texts("Dealer hand :", 500, 150)
 
         gameDisplay.blit(dealer_card, (400, 200))
         gameDisplay.blit(dealer_card_2, (550, 200))
 
-        game_texts("Your's hand is:", 500, 400)
+        game_texts("Your hand :", 500, 400)
         
         gameDisplay.blit(player_card, (300, 450))
         gameDisplay.blit(player_card_2, (410, 450))
@@ -140,7 +138,7 @@ class Play:
         if self.player.value > 21:
             show_dealer_card = pygame.image.load('img/' + self.dealer.card_img[1] + '.png').convert()
             gameDisplay.blit(show_dealer_card, (550, 200))
-            game_finish("You Busted!", 500, 250, red)
+            game_finish("Bust", 500, 250, red)
             time.sleep(4)
             self.play_or_exit()
             
@@ -157,15 +155,15 @@ class Play:
         self.dealer.calc_hand()
         self.player.calc_hand()
         if self.player.value > self.dealer.value:
-            game_finish("You Won!", 500, 250, green)
+            game_finish("You win", 500, 250, green)
             time.sleep(4)
             self.play_or_exit()
         elif self.player.value < self.dealer.value:
-            game_finish("Dealer Wins!", 500, 250, red)
+            game_finish("Dealer wins", 500, 250, red)
             time.sleep(4)
             self.play_or_exit()
         else:
-            game_finish("It's a Tie!", 500, 250, grey)
+            game_finish("Tie", 500, 250, grey)
             time.sleep(4)
             self.play_or_exit()
         
@@ -174,8 +172,8 @@ class Play:
         sys.exit()
     
     def play_or_exit(self):
-        game_texts("Play again press Deal!", 200, 80)
-        time.sleep(3)
+        game_texts("Play again", 200, 80)
+        time.sleep(1)
         self.player.value = 0
         self.dealer.value = 0
         self.deck = Deck()
@@ -189,16 +187,21 @@ class Play:
         
 play_blackjack = Play()
 
-running = True
-
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-        button("Deal", 30, 100, 150, 50, light_slat, dark_slat, play_blackjack.deal)
-        button("Hit", 30, 200, 150, 50, light_slat, dark_slat, play_blackjack.hit)
-        button("Stand", 30, 300, 150, 50, light_slat, dark_slat, play_blackjack.stand)
-        button("EXIT", 30, 500, 150, 50, light_slat, dark_red, play_blackjack.exit)
+async def main():
+    running = True
     
-    pygame.display.flip()
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            button("Deal", 30, 100, 150, 50, light_slat, dark_slat, play_blackjack.deal)
+            button("Hit", 30, 200, 150, 50, light_slat, dark_slat, play_blackjack.hit)
+            button("Stand", 30, 300, 150, 50, light_slat, dark_slat, play_blackjack.stand)
+            button("EXIT", 30, 500, 150, 50, light_slat, dark_red, play_blackjack.exit)
+        
+        pygame.display.flip()
+        await asyncio.sleep(0)
+
+if __name__ == "__main__":
+    asyncio.run(main())
